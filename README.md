@@ -33,8 +33,7 @@ app.addLayout(function (inner, reply) {
 
 app.get('/', async (req, reply) => {
   const name = req.query.name || 'World'
-  strictEqual(reply.html`<h1>Hello ${name}</h1>`, reply)
-  return reply
+  return reply.html`<h1>Hello ${name}</h1>`, reply
 })
 
 await app.listen({ port: 3000 })
@@ -80,8 +79,7 @@ app.register(async function (app) {
 
   app.get('/nested', async (req, reply) => {
     const name = req.query.name || 'World'
-    strictEqual(reply.html`<h1>Nested ${name}</h1>`, reply)
-    return reply
+    return reply.html`<h1>Nested ${name}</h1>`
   })
 })
 
