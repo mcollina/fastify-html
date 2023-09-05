@@ -1,0 +1,23 @@
+{
+  "name": "fastify-html",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard | snazzy && c8 --100 node --test test.js"
+  },
+  "keywords": [],
+  "author": "Matteo Collina <hello@matteocollina.com>",
+  "license": "MIT",
+  "dependencies": {
+    "common-tags": "^1.8.2",
+    "fastify-plugin": "^4.5.1"
+  },
+  "devDependencies": {
+    "c8": "^8.0.1",
+    "fastify": "^4.22.2",
+    "snazzy": "^9.0.0",
+    "standard": "^17.1.0"
+  }
+}
