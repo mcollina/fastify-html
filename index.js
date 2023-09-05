@@ -11,11 +11,11 @@ class Layout {
     }
   }
 
-  render (inner) {
+  render (inner, reply) {
     const fn = this._render
-    let res = fn(inner)
+    let res = fn(inner, reply)
     if (this.parent) {
-      res = this.parent.render(res)
+      res = this.parent.render(res, reply)
     }
     return res
   }
@@ -38,7 +38,7 @@ export default fp(async (fastify, opts) => {
     const layout = this.server[kLayout]
 
     if (layout) {
-      html = layout.render(html)
+      html = layout.render(html, this)
     }
 
     this.header('Content-Type', 'text/html; charset=utf-8')

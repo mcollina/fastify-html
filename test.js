@@ -228,3 +228,41 @@ test('two levels layout with plugins', async t => {
 </html>`)
   }
 })
+
+test('use reply in the layout', async t => {
+  const app = fastify()
+  await app.register(fastifyHtml)
+
+  let _reply
+
+  app.addLayout(function (inner, reply) {
+    strictEqual(reply, _reply)
+    return app.tags.html`
+      <!DOCTYPE html>
+      <html lang="en">
+        <body>
+          ${inner}
+        </body>
+      </html>
+    `
+  })
+
+  app.get('/', async (req, reply) => {
+    _reply = reply
+    strictEqual(reply.html`<h1>Hello World</h1>`, reply)
+    return reply
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/'
+  })
+  strictEqual(res.statusCode, 200)
+  strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
+  strictEqual(res.body, `<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <h1>Hello World</h1>
+  </body>
+</html>`)
+})
