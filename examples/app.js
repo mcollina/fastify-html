@@ -15,10 +15,11 @@ app.addLayout(function (inner, reply) {
       </head>
       <body>
         ${inner}
+        bbb
       </body>
     </html>
   `
-})
+}, { skipOnHeader: 'hx-request' })
 
 app.get('/', async (req, reply) => {
   const name = req.query.name || 'World'

@@ -266,3 +266,36 @@ test('use reply in the layout', async t => {
   </body>
 </html>`)
 })
+
+test('skip layout with hx-request', async t => {
+  const app = fastify()
+  await app.register(fastifyHtml)
+
+  app.addLayout(function (inner) {
+    return app.tags.html`
+      <!DOCTYPE html>
+      <html lang="en">
+        <body>
+          ${inner}
+        </body>
+      </html>
+    `
+  }, { skipOnHeader: 'hx-request' })
+
+  app.get('/', async (req, reply) => {
+    const name = req.query.name || 'World'
+    strictEqual(reply.html`<h1>Hello ${name}</h1>`, reply)
+    return reply
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/',
+    headers: {
+      'hx-request': true
+    }
+  })
+  strictEqual(res.statusCode, 200)
+  strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
+  strictEqual(res.body, '<h1>Hello World</h1>')
+})
