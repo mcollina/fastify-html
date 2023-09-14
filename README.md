@@ -24,12 +24,15 @@ app.addLayout(function (inner, reply) {
   return app.tags.html`
     <!DOCTYPE html>
     <html lang="en">
+      <head>
+        <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+      </head>
       <body>
         ${inner}
       </body>
     </html>
   `
-})
+}, { skipOnHeader: 'hx-request' })
 
 app.get('/', async (req, reply) => {
   const name = req.query.name || 'World'
