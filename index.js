@@ -1,5 +1,6 @@
 import fp from 'fastify-plugin'
 import tags from 'common-tags'
+import { html } from '@gurgunday/html'
 
 const kLayout = Symbol('fastifyHtmlLayout')
 
@@ -20,24 +21,24 @@ export default fp(async (fastify, opts) => {
   })
 
   fastify.decorateReply('html', function (strings, ...values) {
-    let html = tags.html.call(null, strings, ...values)
+    let htmlString = html(strings, ...values)
     let layout = this.server[kLayout]
 
     // render each layout in the stack
     // using a while loop instead of recursion
     // to avoid stack overflows and reduce memory usage
-    while (layout) {
+    while (layout !== undefined) {
       if (layout.skipOnHeader && this.request.headers[layout.skipOnHeader]) {
         layout = layout.parent
         continue
       }
       const render = layout.render
-      html = render(html, this)
+      htmlString = render(htmlString, this)
       layout = layout.parent
     }
 
     this.header('Content-Type', 'text/html; charset=utf-8')
-    this.send(html)
+    this.send(htmlString)
     return this
   })
 }, {
