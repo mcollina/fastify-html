@@ -1,22 +1,21 @@
 import fp from 'fastify-plugin'
-import tags from 'common-tags'
 import { html } from '@gurgunday/html'
 
 const kLayout = Symbol('fastifyHtmlLayout')
 
 export default fp(async (fastify, opts) => {
-  fastify.decorate('tags', tags)
-  fastify.decorate(kLayout, undefined)
+  fastify.decorate('html', html)
+  fastify.decorate(kLayout, null)
 
   fastify.decorate('addLayout', function (render, { skipOnHeader } = {}) {
     // Using a symbol attached to `this` and a stack allows us to
     // support nested layouts with encapsulated plugins.
-    let layout = this[kLayout]
-    layout = {
+    const layout = {
       render,
-      parent: layout,
+      parent: this[kLayout],
       skipOnHeader
     }
+
     this[kLayout] = layout
   })
 
@@ -27,7 +26,7 @@ export default fp(async (fastify, opts) => {
     // render each layout in the stack
     // using a while loop instead of recursion
     // to avoid stack overflows and reduce memory usage
-    while (layout !== undefined) {
+    while (layout !== null) {
       if (layout.skipOnHeader && this.request.headers[layout.skipOnHeader]) {
         layout = layout.parent
         continue

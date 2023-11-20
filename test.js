@@ -2,7 +2,6 @@ import { test } from 'node:test'
 import fastify from 'fastify'
 import fastifyHtml from './index.js'
 import { strictEqual } from 'node:assert'
-import tags from 'common-tags'
 
 test('render html', async t => {
   const app = fastify()
@@ -35,24 +34,16 @@ test('render html', async t => {
   }
 })
 
-test('expose tags', async t => {
-  const app = fastify()
-  app.register(fastifyHtml)
-  await app.ready()
-
-  strictEqual(app.tags, tags)
-})
-
 test('one level layout', async t => {
   const app = fastify()
   await app.register(fastifyHtml)
 
   app.addLayout(function (inner) {
-    return app.tags.html`
+    return app.html`
       <!DOCTYPE html>
       <html lang="en">
         <body>
-          ${inner}
+          !${inner}
         </body>
       </html>
     `
@@ -71,12 +62,12 @@ test('one level layout', async t => {
     })
     strictEqual(res.statusCode, 200)
     strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
-    strictEqual(res.body, `<!DOCTYPE html>
+    strictEqual(res.body.replaceAll(' ', '').replaceAll('\n', ''), `<!DOCTYPE html>
 <html lang="en">
   <body>
     <h1>Hello World</h1>
   </body>
-</html>`)
+</html>`.replaceAll(' ', '').replaceAll('\n', ''))
   }
 
   {
@@ -86,12 +77,12 @@ test('one level layout', async t => {
     })
     strictEqual(res.statusCode, 200)
     strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
-    strictEqual(res.body, `<!DOCTYPE html>
+    strictEqual(res.body.replaceAll(' ', '').replaceAll('\n', ''), `<!DOCTYPE html>
 <html lang="en">
   <body>
     <h1>Hello Matteo</h1>
   </body>
-</html>`)
+</html>`.replaceAll(' ', '').replaceAll('\n', ''))
   }
 })
 
@@ -100,20 +91,20 @@ test('two levels layout', async t => {
   await app.register(fastifyHtml)
 
   app.addLayout(function (inner) {
-    return app.tags.html`
+    return app.html`
       <!DOCTYPE html>
       <html lang="en">
         <body>
-          ${inner}
+          !${inner}
         </body>
       </html>
     `
   })
 
   app.addLayout(function (inner) {
-    return app.tags.html`
+    return app.html`
       <div>
-        ${inner}
+        !${inner}
       </div>
     `
   })
@@ -131,14 +122,14 @@ test('two levels layout', async t => {
     })
     strictEqual(res.statusCode, 200)
     strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
-    strictEqual(res.body, `<!DOCTYPE html>
+    strictEqual(res.body.replaceAll(' ', '').replaceAll('\n', ''), `<!DOCTYPE html>
 <html lang="en">
   <body>
     <div>
       <h1>Hello World</h1>
     </div>
   </body>
-</html>`)
+</html>`.replaceAll(' ', '').replaceAll('\n', ''))
   }
 
   {
@@ -148,14 +139,14 @@ test('two levels layout', async t => {
     })
     strictEqual(res.statusCode, 200)
     strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
-    strictEqual(res.body, `<!DOCTYPE html>
+    strictEqual(res.body.replaceAll(' ', '').replaceAll('\n', ''), `<!DOCTYPE html>
 <html lang="en">
   <body>
     <div>
       <h1>Hello Matteo</h1>
     </div>
   </body>
-</html>`)
+</html>`.replaceAll(' ', '').replaceAll('\n', ''))
   }
 })
 
@@ -164,11 +155,11 @@ test('two levels layout with plugins', async t => {
   await app.register(fastifyHtml)
 
   app.addLayout(function (inner) {
-    return app.tags.html`
+    return app.html`
       <!DOCTYPE html>
       <html lang="en">
         <body>
-          ${inner}
+          !${inner}
         </body>
       </html>
     `
@@ -182,9 +173,9 @@ test('two levels layout with plugins', async t => {
 
   app.register(async function (app) {
     app.addLayout(function (inner) {
-      return app.tags.html`
+      return app.html`
         <div>
-          ${inner}
+          !${inner}
         </div>
       `
     })
@@ -203,12 +194,12 @@ test('two levels layout with plugins', async t => {
     })
     strictEqual(res.statusCode, 200)
     strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
-    strictEqual(res.body, `<!DOCTYPE html>
+    strictEqual(res.body.replaceAll(' ', '').replaceAll('\n', ''), `<!DOCTYPE html>
 <html lang="en">
   <body>
     <h1>Hello World</h1>
   </body>
-</html>`)
+</html>`.replaceAll(' ', '').replaceAll('\n', ''))
   }
 
   {
@@ -218,14 +209,14 @@ test('two levels layout with plugins', async t => {
     })
     strictEqual(res.statusCode, 200)
     strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
-    strictEqual(res.body, `<!DOCTYPE html>
+    strictEqual(res.body.replaceAll(' ', '').replaceAll('\n', ''), `<!DOCTYPE html>
 <html lang="en">
   <body>
     <div>
       <h1>Hello Matteo</h1>
     </div>
   </body>
-</html>`)
+</html>`.replaceAll(' ', '').replaceAll('\n', ''))
   }
 })
 
@@ -237,14 +228,12 @@ test('use reply in the layout', async t => {
 
   app.addLayout(function (inner, reply) {
     strictEqual(reply, _reply)
-    return app.tags.html`
-      <!DOCTYPE html>
+    return app.html`<!DOCTYPE html>
       <html lang="en">
         <body>
-          ${inner}
+          !${inner}
         </body>
-      </html>
-    `
+      </html>`
   })
 
   app.get('/', async (req, reply) => {
@@ -260,11 +249,11 @@ test('use reply in the layout', async t => {
   strictEqual(res.statusCode, 200)
   strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
   strictEqual(res.body, `<!DOCTYPE html>
-<html lang="en">
-  <body>
-    <h1>Hello World</h1>
-  </body>
-</html>`)
+      <html lang="en">
+        <body>
+          <h1>Hello World</h1>
+        </body>
+      </html>`)
 })
 
 test('skip layout with hx-request', async t => {
@@ -272,7 +261,7 @@ test('skip layout with hx-request', async t => {
   await app.register(fastifyHtml)
 
   app.addLayout(function (inner) {
-    return app.tags.html`
+    return app.html`
       <!DOCTYPE html>
       <html lang="en">
         <body>

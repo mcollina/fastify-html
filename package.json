@@ -21,7 +21,6 @@
   "license": "MIT",
   "dependencies": {
     "@gurgunday/html": "^6.5.3",
-    "common-tags": "^1.8.2",
     "fastify-plugin": "^4.5.1"
   },
   "devDependencies": {
