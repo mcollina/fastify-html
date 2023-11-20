@@ -28,7 +28,7 @@ app.addLayout(function (inner, reply) {
         <script src="https://unpkg.com/htmx.org@1.9.5"></script>
       </head>
       <body>
-        !${inner} <!-- Don't forget to escape the expression by prefixing it with ! if it's safe to render raw -->
+        !${inner} <!-- Prefix inner with ! to render it raw -->
       </body>
     </html>
   `
@@ -46,11 +46,11 @@ app.get('/complex-response/:page', async (req, reply) => {
   
   return reply.html`
       <div>
-        Welcome, ${name} <!-- will be auto escaped -->
+        Welcome, ${name} <!-- Will be auto escaped -->
 
-        !${userInfo} <!-- will not be auto escaped – warning: user inputs should generally be escaped -->
+        !${userInfo} <!-- Will not be auto escaped – warning: user inputs should generally be escaped -->
 
-        <!-- Prefix other html tags as they will handle their expressions themselves -->
+        <!-- Don't forget to prefix other html tags with ! to not escape the safe HTML -->
         !${
           demand !== undefined
             ? app.html`
