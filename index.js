@@ -1,10 +1,12 @@
 import fp from 'fastify-plugin'
 import { html } from '@gurgunday/html'
+import { includeFile } from '@gurgunday/html/includeFile.js'
 
 const kLayout = Symbol('fastifyHtmlLayout')
 
 export default fp(async (fastify, opts) => {
   fastify.decorate('html', html)
+  fastify.decorate('renderFile', includeFile)
   fastify.decorate(kLayout, null)
 
   fastify.decorate('addLayout', function (render, { skipOnHeader } = {}) {
