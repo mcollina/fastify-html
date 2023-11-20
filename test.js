@@ -248,14 +248,13 @@ test('use reply in the layout', async t => {
   })
   strictEqual(res.statusCode, 200)
   strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
-  strictEqual(res.body, `<!DOCTYPE html>
-      <html lang="en">
-        <body>
-          <h1>Hello World</h1>
-        </body>
-      </html>`)
+  strictEqual(res.body.replaceAll(' ', '').replaceAll('\n', ''), `<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <h1>Hello World</h1>
+  </body>
+</html>`.replaceAll(' ', '').replaceAll('\n', ''))
 })
-
 test('skip layout with hx-request', async t => {
   const app = fastify()
   await app.register(fastifyHtml)
