@@ -28,7 +28,7 @@ app.addLayout(function (inner, reply) {
         <script src="https://unpkg.com/htmx.org@1.9.5"></script>
       </head>
       <body>
-        !${inner} <!-- Don't forget escape the expression by prefixing it with ! if it's safe to render raw -->
+        !${inner} <!-- Don't forget to escape the expression by prefixing it with ! if it's safe to render raw -->
       </body>
     </html>
   `
