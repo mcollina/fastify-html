@@ -3,7 +3,7 @@
 Generate html in the most natural Fastify way, using template tags,
 layouts and the plugin system.
 
-Based on top of [common-tags](https://github.com/zspecza/common-tags/).
+Template expressions are escaped by default unless they are prefixed with `!`.
 
 ## Install
 
@@ -21,14 +21,14 @@ const app = fastify()
 await app.register(fastifyHtml)
 
 app.addLayout(function (inner, reply) {
-  return app.tags.html`
+  return app.html`
     <!DOCTYPE html>
     <html lang="en">
       <head>
         <script src="https://unpkg.com/htmx.org@1.9.5"></script>
       </head>
       <body>
-        ${inner}
+        !${inner} <!-- Don't forget escape the expression by prefixing it with ! if it's safe to render raw -->
       </body>
     </html>
   `
@@ -37,6 +37,29 @@ app.addLayout(function (inner, reply) {
 app.get('/', async (req, reply) => {
   const name = req.query.name || 'World'
   return reply.html`<h1>Hello ${name}</h1>`, reply
+})
+
+app.get('/complex-response/:page', async (req, reply) => {
+  const name = req.query.name || 'World'
+  const userInfo = await getInfo(name)
+  const demand = req.query.demand
+  
+  return reply.html`
+      <div>
+        Welcome, ${name} <!-- will be auto escaped -->
+
+        !${userInfo} <!-- will not be auto escaped – warning: user inputs should generally be escaped -->
+
+        <!-- Prefix other html tags as they will handle their expressions themselves -->
+        !${
+          demand !== undefined
+            ? app.html`
+              <p>Your demand: ${demand}</p>
+            `
+            : ""
+        }
+      </div>
+  `
 })
 
 await app.listen({ port: 3000 })
@@ -55,11 +78,11 @@ const app = fastify()
 await app.register(fastifyHtml)
 
 app.addLayout(function (inner, reply) {
-  return app.tags.html`
+  return app.html`
     <!DOCTYPE html>
     <html lang="en">
       <body>
-        ${inner}
+        !${inner}
       </body>
     </html>
   `
@@ -73,9 +96,9 @@ app.get('/', async (req, reply) => {
 
 app.register(async function (app) {
   app.addLayout(function (inner) {
-    return app.tags.html`
+    return app.html`
       <i>
-        ${inner}
+        !${inner}
       </i>
     `
   })
