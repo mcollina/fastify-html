@@ -20,7 +20,7 @@
   "author": "Matteo Collina <hello@matteocollina.com>",
   "license": "MIT",
   "dependencies": {
-    "@gurgunday/html": "^6.5.5",
+    "@gurgunday/html": "^7.0.0",
     "fastify-plugin": "^4.5.1"
   },
   "devDependencies": {
