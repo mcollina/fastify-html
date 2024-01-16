@@ -2,12 +2,13 @@ import fastify from 'fastify'
 import fastifyHtml from '../index.js'
 import formBody from '@fastify/formbody'
 
-const app = fastify({ logger: true })
+// const app = fastify({ logger: true })
+const app = fastify()
 await app.register(formBody)
 await app.register(fastifyHtml)
 
 app.addLayout(function (inner, reply) {
-  return app.tags.html`
+  return app.html`
     <!DOCTYPE html>
     <html lang="en">
       <head>
