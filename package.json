@@ -20,8 +20,8 @@
   "author": "Matteo Collina <hello@matteocollina.com>",
   "license": "MIT",
   "dependencies": {
-    "@gurgunday/html": "^7.1.0",
-    "fastify-plugin": "^4.5.1"
+    "fastify-plugin": "^4.5.1",
+    "ghtml": "^1.0.0"
   },
   "devDependencies": {
     "@fastify/formbody": "^7.4.0",
