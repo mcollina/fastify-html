@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { html } from '@gurgunday/html'
+import { html } from './lib/html.js'
 
 const kLayout = Symbol('fastifyHtmlLayout')
 
