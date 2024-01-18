@@ -2,7 +2,14 @@ import { test } from 'node:test'
 import fastify from 'fastify'
 import fastifyHtml from './index.js'
 import { strictEqual } from 'node:assert'
-import { escapeDictionary } from './lib/html.js'
+
+const escapeDictionary = {
+  '"': '&quot;',
+  "'": '&apos;',
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;'
+}
 
 test('render html', async t => {
   const app = fastify()
