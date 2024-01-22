@@ -36,7 +36,7 @@ app.addLayout(function (inner, reply) {
 
 app.get('/', async (req, reply) => {
   const name = req.query.name || 'World'
-  return reply.html`<h1>Hello ${name}</h1>`, reply
+  return reply.html`<h1>Hello ${name}</h1>`
 })
 
 app.get('/complex-response/:page', async (req, reply) => {
