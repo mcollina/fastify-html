@@ -24,6 +24,7 @@
     "ghtml": "^1.0.0"
   },
   "devDependencies": {
+    "@fastify/cookie": "^9.3.1",
     "@fastify/formbody": "^7.4.0",
     "@fastify/pre-commit": "^2.0.2",
     "c8": "^9.0.0",
