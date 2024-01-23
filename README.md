@@ -28,7 +28,8 @@ app.addLayout(function (inner, reply) {
         <script src="https://unpkg.com/htmx.org@1.9.5"></script>
       </head>
       <body>
-        !${inner} <!-- Prefix inner with ! to render it raw -->
+        <!-- Prefix inner with ! if it contains safe HTML -->
+        !${inner}
       </body>
     </html>
   `
@@ -41,18 +42,28 @@ app.get('/', async (req, reply) => {
 
 app.get('/complex-response/:page', async (req, reply) => {
   const name = req.query.name || 'World'
-  const userInfo = await getInfo(name)
+  const userInfo = await getInfo(name) || {}
   const demand = req.query.demand
   
   return reply.html`
       <div>
-        Welcome, ${name} <!-- Will be auto escaped -->
+        Welcome, ${name}.
+        <br /><br />
 
-        !${userInfo} <!-- Will not be auto escaped – warning: user inputs should generally be escaped -->
+        User information:
+        <br />
 
-        <!-- Don't forget to prefix other html tags with ! to not escape the safe HTML -->
+        <!-- Don't forget to prefix expressions that contain other html tags -->
+        !${Object.keys(userInfo).map(
+          (key) => app.html`
+          ${key}: <b>${userInfo[key]}</b>
+          <br />
+        `,
+        )}
+        <br />
+
         !${
-          demand !== undefined
+          demand
             ? app.html`
               <p>Your demand: ${demand}</p>
             `
