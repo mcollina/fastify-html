@@ -58,7 +58,7 @@ app.get('/complex-response/:page', async (req, reply) => {
           (key) => app.html`
           ${key}: <b>${userInfo[key]}</b>
           <br />
-        `,
+        `
         )}
         <br />
 
