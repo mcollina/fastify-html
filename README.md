@@ -28,7 +28,7 @@ app.addLayout(function (inner, reply) {
         <script src="https://unpkg.com/htmx.org@1.9.5"></script>
       </head>
       <body>
-        <!-- Prefix inner with ! if it contains safe HTML -->
+        <!-- Prefix expressions with ! if they contain safe HTML -->
         !${inner}
       </body>
     </html>
