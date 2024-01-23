@@ -4,9 +4,10 @@
   "description": "",
   "type": "module",
   "main": "index.js",
+  "types": "types/plugin.d.ts",
   "scripts": {
     "lint": "standard | snazzy",
-    "test": "c8 --100 node --test test.js"
+    "test": "c8 --100 node --test test.js && tsd"
   },
   "pre-commit": [
     "lint",
@@ -27,9 +28,11 @@
     "@fastify/cookie": "^9.3.1",
     "@fastify/formbody": "^7.4.0",
     "@fastify/pre-commit": "^2.0.2",
+    "@types/node": "^20.11.5",
     "c8": "^9.0.0",
-    "fastify": "^4.22.2",
+    "fastify": "^4.25.2",
     "snazzy": "^9.0.0",
-    "standard": "^17.1.0"
+    "standard": "^17.1.0",
+    "tsd": "^0.30.4"
   }
 }
