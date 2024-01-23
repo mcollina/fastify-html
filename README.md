@@ -56,9 +56,9 @@ app.get('/complex-response/:page', async (req, reply) => {
         <!-- Don't forget to prefix expressions that contain other html tags -->
         !${Object.keys(userInfo).map(
           (key) => app.html`
-          ${key}: <b>${userInfo[key]}</b>
-          <br />
-        `
+            ${key}: <b>${userInfo[key]}</b>
+            <br />
+          `
         )}
         <br />
 
