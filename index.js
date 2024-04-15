@@ -26,7 +26,7 @@ export default fp(async (fastify, opts) => {
     // render each layout in the stack
     // using a while loop instead of recursion
     // to avoid stack overflows and reduce memory usage
-    while (layout !== null) {
+    while (layout) {
       if (layout.skipOnHeader && this.request.headers[layout.skipOnHeader]) {
         layout = layout.parent
         continue

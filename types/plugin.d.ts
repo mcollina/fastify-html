@@ -22,7 +22,7 @@ declare module 'fastify' {
 
   interface FastifyReply {
     /**
-     * Function to render HTML with layouts.
+     * Function to render and send HTML with layouts.
      * @param strings Template strings.
      * @param values Values to be injected into the template.
      */
