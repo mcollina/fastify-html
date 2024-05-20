@@ -492,7 +492,7 @@ test('escape (async)', async t => {
   }
 })
 
-test('escape (async)', async t => {
+test('readFile/promise (async)', async t => {
   const app = fastify()
   app.register(fastifyHtml, { async: true })
 
