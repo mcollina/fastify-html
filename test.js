@@ -2,6 +2,10 @@ import { test } from 'node:test'
 import fastify from 'fastify'
 import fastifyHtml from './index.js'
 import { strictEqual } from 'node:assert'
+import { readFile } from 'node:fs/promises'
+import { readFileSync } from 'node:fs'
+
+const README = readFileSync('README.md', 'utf8')
 
 const escapeDictionary = {
   '"': '&quot;',
@@ -486,4 +490,22 @@ test('escape (async)', async t => {
     strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
     strictEqual(res.body, `<h1>Hello ${escapeDictionary[char]}</h1>`)
   }
+})
+
+test('escape (async)', async t => {
+  const app = fastify()
+  app.register(fastifyHtml, { async: true })
+
+  app.get('/', async (req, reply) => {
+    strictEqual(reply.html`<h1>Hello !${readFile('README.md', 'utf8')}</h1>`, reply)
+    return reply
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/'
+  })
+  strictEqual(res.statusCode, 200)
+  strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
+  strictEqual(res.body, `<h1>Hello ${README}</h1>`)
 })
