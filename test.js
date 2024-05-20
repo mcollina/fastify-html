@@ -94,6 +94,62 @@ test('one level layout', async t => {
   }
 })
 
+test('one level layout (async)', async t => {
+  const app = fastify()
+  await app.register(fastifyHtml, { async: true })
+
+  app.setErrorHandler(function (error, req, reply) {
+    console.error(error)
+  })
+
+  app.addLayout(function (inner) {
+    return app.html`
+      <!DOCTYPE html>
+      <html lang="en">
+        <body>
+          !${inner}
+        </body>
+      </html>
+    `
+  })
+
+  app.get('/', async (req, reply) => {
+    const name = req.query.name || 'World'
+    strictEqual(reply.html`<h1>Hello ${name}</h1>`, reply)
+    return reply
+  })
+
+  {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/'
+    })
+    strictEqual(res.statusCode, 200)
+    strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
+    strictEqual(res.body.replaceAll(' ', '').replaceAll('\n', ''), `<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <h1>Hello World</h1>
+  </body>
+</html>`.replaceAll(' ', '').replaceAll('\n', ''))
+  }
+
+  {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/?name=Matteo'
+    })
+    strictEqual(res.statusCode, 200)
+    strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
+    strictEqual(res.body.replaceAll(' ', '').replaceAll('\n', ''), `<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <h1>Hello Matteo</h1>
+  </body>
+</html>`.replaceAll(' ', '').replaceAll('\n', ''))
+  }
+})
+
 test('two levels layout', async t => {
   const app = fastify()
   await app.register(fastifyHtml)
@@ -391,6 +447,28 @@ test('renders a number', async t => {
 test('escape', async t => {
   const app = fastify()
   app.register(fastifyHtml)
+
+  app.post('/', async (req, reply) => {
+    const char = req.body.char
+    strictEqual(reply.html`<h1>Hello ${char}</h1>`, reply)
+    return reply
+  })
+
+  for (const char of ['<', '>', '"', '\'', '&']) {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/',
+      body: { char }
+    })
+    strictEqual(res.statusCode, 200)
+    strictEqual(res.headers['content-type'], 'text/html; charset=utf-8')
+    strictEqual(res.body, `<h1>Hello ${escapeDictionary[char]}</h1>`)
+  }
+})
+
+test('escape (async)', async t => {
+  const app = fastify()
+  app.register(fastifyHtml, { async: true })
 
   app.post('/', async (req, reply) => {
     const char = req.body.char

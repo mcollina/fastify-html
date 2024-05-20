@@ -1,10 +1,11 @@
 import fp from 'fastify-plugin'
-import { html } from 'ghtml'
+import { html, htmlAsyncGenerator } from 'ghtml'
+import { Readable } from 'node:stream'
 
 const kLayout = Symbol('fastifyHtmlLayout')
 
 export default fp(async (fastify, opts) => {
-  fastify.decorate('html', html)
+  fastify.decorate('html', opts.async ? htmlAsyncGenerator : html)
   fastify.decorate(kLayout, null)
 
   fastify.decorate('addLayout', function (render, { skipOnHeader } = {}) {
@@ -20,7 +21,7 @@ export default fp(async (fastify, opts) => {
   })
 
   fastify.decorateReply('html', function (strings, ...values) {
-    let htmlString = html(strings, ...values)
+    let htmlString = fastify.html(strings, ...values)
     let layout = this.server[kLayout]
 
     // render each layout in the stack
@@ -37,7 +38,7 @@ export default fp(async (fastify, opts) => {
     }
 
     this.header('Content-Type', 'text/html; charset=utf-8')
-    this.send(htmlString)
+    this.send(opts.async ? Readable.from(htmlString) : htmlString)
     return this
   })
 }, {
