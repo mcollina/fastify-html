@@ -32,8 +32,7 @@ export default fp(async (fastify, opts) => {
         layout = layout.parent
         continue
       }
-      const render = layout.render
-      htmlString = render(htmlString, this)
+      htmlString = layout.render(htmlString, this)
       layout = layout.parent
     }
 
