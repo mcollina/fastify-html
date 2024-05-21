@@ -8,7 +8,7 @@ app.register(fastifyHtml);
 
 const server = fastify();
 
-server.register(fastifyHtml);
+server.register(fastifyHtml, { async: false });
 
 server.after(() => {
   // Testing the 'html' method on Fastify instance

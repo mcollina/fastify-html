@@ -30,7 +30,9 @@ declare module 'fastify' {
   }
 }
 
-interface FastifyHtmlPluginOptions {}
+interface FastifyHtmlPluginOptions {
+  async?: boolean;
+}
 
 type FastifyHtmlPlugin = FastifyPluginCallback<FastifyHtmlPluginOptions>;
 
