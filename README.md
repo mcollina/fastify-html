@@ -28,7 +28,7 @@ app.addLayout(function (inner, reply) {
         <script src="https://unpkg.com/htmx.org@1.9.5"></script>
       </head>
       <body>
-        <!-- Prefix expressions with ! if they contain safe HTML -->
+        <!-- Prefix expressions with ! if they contain safe HTML or other html tags -->
         !${inner}
       </body>
     </html>
@@ -42,7 +42,7 @@ app.get('/', async (req, reply) => {
 
 app.get('/complex-response/:page', async (req, reply) => {
   const name = req.query.name || 'World'
-  const userInfo = await getInfo(name) || {}
+  const userInfo = await getUserInfo(name) || {}
   const demand = req.query.demand
   
   return reply.html`
@@ -53,7 +53,6 @@ app.get('/complex-response/:page', async (req, reply) => {
         User information:
         <br />
 
-        <!-- Don't forget to prefix expressions that contain other html tags -->
         !${Object.keys(userInfo).map(
           (key) => app.html`
             ${key}: <b>${userInfo[key]}</b>
@@ -74,6 +73,68 @@ app.get('/complex-response/:page', async (req, reply) => {
 })
 
 await app.listen({ port: 3000 })
+
+async function getUserInfo(name) {
+  return { age: 25, location: "Earth" };
+}
+```
+
+## Async Mode Usage
+
+```js
+import fastify from 'fastify'
+import fastifyHtml from 'fastify-html'
+import { createReadStream } from 'node:fs'
+
+const app = fastify()
+await app.register(fastifyHtml, { async: true })
+
+app.addLayout(function (inner, reply) {
+  return app.html`
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+      </head>
+      <body>
+        !${inner}
+      </body>
+    </html>
+  `
+}, { skipOnHeader: 'hx-request' })
+
+app.get('/:name', async (req, reply) => {
+  return reply.html`
+      <div>
+        Welcome, ${req.params.name}.
+        <br /><br />
+
+        User information:
+        <br />
+
+        <!-- Promises are supported and resolved automatically in async mode -->
+        !${getUserInfoPromise(req.params.name)}
+        <br />
+
+        <!-- Streams and (a)sync generators are supported too -->
+        <div>
+          File content:
+          <br />
+          !${createReadStream('./path/to/file.txt')}
+        </div>
+      </div>
+  `
+})
+
+await app.listen({ port: 3000 })
+
+async function getUserInfoPromise(name) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ age: 25, location: "Earth" });
+    }, 1000);
+  });
+}
 ```
 
 ### Plugins
@@ -122,6 +183,10 @@ app.register(async function (app) {
 
 await app.listen({ port: 3000 })
 ```
+
+## Options
+
+- `async`: Enables async mode for handling asynchronous template expressions. Set this option to true when registering the fastify-html plugin to take advantage of features like promise resolution, stream handling, and async generator support.
 
 ## License
 
