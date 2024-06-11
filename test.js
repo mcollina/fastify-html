@@ -8,11 +8,12 @@ import { readFileSync, createReadStream } from 'node:fs'
 const README = readFileSync('README.md', 'utf8')
 
 const escapeDictionary = {
-  '"': '&quot;',
-  "'": '&apos;',
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;'
+  '"': '&#34;',
+  '&': '&#38;',
+  "'": '&#39;',
+  '<': '&#60;',
+  '>': '&#62;',
+  '`': '&#96;'
 }
 
 test('render html', async t => {
