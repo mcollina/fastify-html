@@ -22,7 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "fastify-plugin": "^4.5.1",
-    "ghtml": "^3.0.2"
+    "ghtml": "^3.0.3"
   },
   "devDependencies": {
     "@fastify/cookie": "^9.3.1",
