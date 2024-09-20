@@ -21,7 +21,7 @@
   "author": "Matteo Collina <hello@matteocollina.com>",
   "license": "MIT",
   "dependencies": {
-    "fastify-plugin": "^4.5.1",
+    "fastify-plugin": "^5.0.0",
     "ghtml": "^3.0.6"
   },
   "devDependencies": {
