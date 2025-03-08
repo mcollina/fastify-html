@@ -37,4 +37,4 @@ interface FastifyHtmlPluginOptions {
 type FastifyHtmlPlugin = FastifyPluginCallback<FastifyHtmlPluginOptions>;
 
 declare const fastifyHtml: FastifyHtmlPlugin;
-export = fastifyHtml;
+export default fastifyHtml;
