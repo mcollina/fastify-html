@@ -30,11 +30,16 @@ declare module 'fastify' {
   }
 }
 
-interface FastifyHtmlPluginOptions {
-  async?: boolean;
+type FastifyHtmlPlugin = FastifyPluginCallback<fastifyHtml.FastifyHtmlPluginOptions>;
+
+declare namespace fastifyHtml {
+  export const fastifyHtml: FastifyHtmlPlugin;
+
+  export interface FastifyHtmlPluginOptions {
+    async?: boolean;
+  }
+  
+  export { fastifyHtml as default }
 }
 
-type FastifyHtmlPlugin = FastifyPluginCallback<FastifyHtmlPluginOptions>;
-
-declare const fastifyHtml: FastifyHtmlPlugin;
 export = fastifyHtml;
