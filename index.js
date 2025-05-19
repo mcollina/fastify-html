@@ -4,7 +4,7 @@ import { Readable } from 'node:stream'
 
 const kLayout = Symbol('fastifyHtmlLayout')
 
-export default fp(async (fastify, opts) => {
+function plugin (fastify, opts) {
   fastify.decorate('html', opts.async ? htmlAsyncGenerator : html)
   fastify.decorate(kLayout, null)
 
@@ -40,6 +40,11 @@ export default fp(async (fastify, opts) => {
     this.send(opts.async ? Readable.from(htmlString) : htmlString)
     return this
   })
-}, {
+}
+
+const fastifyHtml = fp(plugin, {
+  fastify: '5.x',
   name: 'fastify-html'
 })
+
+export default fastifyHtml
