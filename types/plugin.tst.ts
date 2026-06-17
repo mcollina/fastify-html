@@ -1,39 +1,69 @@
 import fastifyHtml from './plugin.js'
-import { expect } from 'tstyche'
+import { describe, expect, test } from 'tstyche'
 import * as fastifyHtmlStar from './plugin.js'
 import fastify, { type FastifyInstance, type FastifyReply } from 'fastify'
 
-const app: FastifyInstance = fastify()
-app.register(fastifyHtml)
+describe('fastify-html', () => {
+  describe('plugin registration', () => {
+    test('registers via the default export', () => {
+      const app: FastifyInstance = fastify()
+      app.register(fastifyHtml)
+    })
 
-const server = fastify()
-
-server.register(fastifyHtml, { async: false })
-
-server.after(() => {
-  // Testing the 'html' method on Fastify instance
-  expect(server.html).type.toBe<(strings: TemplateStringsArray, ...values: any[]) => string>()
-
-  // Testing the 'addLayout' method on Fastify instance
-  expect(server.addLayout).type.toBe<(
-    render: (htmlString: string, context: FastifyReply) => string,
-    options?: { skipOnHeader?: string }
-  ) => void>()
-
-  // Testing the 'html' method on Fastify reply
-  server.get('/', (request, reply) => {
-    expect(reply.html).type.toBe<(strings: TemplateStringsArray, ...values: any[]) => FastifyReply>()
-
-    reply.html`<p>Hello World</p>`
+    test('accepts the async option', () => {
+      const server = fastify()
+      server.register(fastifyHtml, { async: false })
+    })
   })
-})
 
-const serverWithPlugin = fastify()
+  describe('FastifyInstance decorator: html()', () => {
+    test('returns a string for any template literal input', () => {
+      const server = fastify()
+      server.register(fastifyHtml, { async: false })
 
-serverWithPlugin.register(fastifyHtml)
+      server.after(() => {
+        expect(server.html).type.toBe<(strings: TemplateStringsArray, ...values: any[]) => string>()
+      })
+    })
+  })
 
-serverWithPlugin.after(() => {
-  serverWithPlugin.get('/', (request, reply) => {
-    reply.html`<p>Hello World</p>`
+  describe('FastifyInstance decorator: addLayout()', () => {
+    test('accepts a render function and an optional skipOnHeader option', () => {
+      const server = fastify()
+      server.register(fastifyHtml, { async: false })
+
+      server.after(() => {
+        expect(server.addLayout).type.toBe<(
+          render: (htmlString: string, context: FastifyReply) => string,
+          options?: { skipOnHeader?: string }
+        ) => void>()
+      })
+    })
+  })
+
+  describe('FastifyReply decorator: html()', () => {
+    test('returns FastifyReply for any template literal input', () => {
+      const server = fastify()
+      server.register(fastifyHtml, { async: false })
+
+      server.after(() => {
+        server.get('/', (request, reply) => {
+          expect(reply.html).type.toBe<(strings: TemplateStringsArray, ...values: any[]) => FastifyReply>()
+
+          reply.html`<p>Hello World</p>`
+        })
+      })
+    })
+
+    test('can be used inside a route handler with default options', () => {
+      const server = fastify()
+      server.register(fastifyHtml)
+
+      server.after(() => {
+        server.get('/', (request, reply) => {
+          reply.html`<p>Hello World</p>`
+        })
+      })
+    })
   })
 })
