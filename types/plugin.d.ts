@@ -36,13 +36,10 @@ declare namespace fastifyHtml {
   export interface FastifyHtmlOptions {
     async?: boolean;
   }
-  
-  export const fastifyHtml: FastifyHtmlPlugin;
-  export { fastifyHtml as default }
 }
 
 declare function fastifyHtml (
   ...params: Parameters<FastifyHtmlPlugin>
 ): ReturnType<FastifyHtmlPlugin>
 
-export = fastifyHtml;
+export default fastifyHtml;
